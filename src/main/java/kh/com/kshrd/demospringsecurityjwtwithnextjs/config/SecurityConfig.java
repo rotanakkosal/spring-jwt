@@ -1,6 +1,7 @@
 package kh.com.kshrd.demospringsecurityjwtwithnextjs.config;
 
 import kh.com.kshrd.demospringsecurityjwtwithnextjs.jwt.JwtAuthEntryPoint;
+import kh.com.kshrd.demospringsecurityjwtwithnextjs.jwt.JwtAuthFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,16 +11,20 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @AllArgsConstructor
+
 public class SecurityConfig {
-    private final JwtAuthEntryPoint jwtAuthEntryPoint; // Injected from config package
+    private final JwtAuthEntryPoint jwtAuthEntryPoint;
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -42,7 +47,8 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthEntryPoint)
-                );
+                )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
