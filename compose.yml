@@ -1,0 +1,15 @@
+services:
+  demo-spring-security-jwt-with-nextjs-db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: demo_spring_security_jwt_with_nextjs_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - demo-spring-security-jwt-with-nextjs-db-data:/var/lib/postgresql/data
+    ports:
+      - "5450:5432"
+
+volumes:
+  demo-spring-security-jwt-with-nextjs-db-data:
